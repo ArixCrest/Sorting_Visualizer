@@ -56,7 +56,45 @@ struct array{
             }
         }
         DRAW();
-
+    }
+    void merge(int left,int mid,int right){
+        int temp[right-left+1];
+        int i = left;
+        int j = mid+1;
+        int k = 0;
+        while(i<=mid && j<=right){
+            if(arr[i]>=arr[j]){
+                temp[k] = arr[j];
+                j++;
+                k++;
+            }else{
+                temp[k] = arr[i];
+                i++;
+                k++;
+            }
+        }
+        while(i<=mid){
+            temp[k] = arr[i];
+            i++;
+            k++;
+        }
+        while(j<=right){
+            temp[k] = arr[j];
+            j++;
+            k++;
+        }
+        for(int x = left;x<=right;x++){
+            arr[x] = temp[x-left];
+        }
+        DRAW();
+    }
+    void Merge_Sort(int l,int r){
+        if(l<r){
+            int mid = (l+r)/2;
+            Merge_Sort(l,mid);
+            Merge_Sort(mid+1,r);
+            merge(l,mid,r);
+        }
     }
 };
 array arr(size);
@@ -67,6 +105,7 @@ void DRAW(){
         if(arr.clr[i]==2){
             sf::Vertex line[] = {
                 sf::Vertex(sf::Vector2f(i+10,-10),sf::Color::Magenta),
+                sf::Vertex(sf::Vector2f(i+10,-arr.arr[i]-10),sf::Color::Red),
                 
             };
             window.draw(line,2,sf::Lines);
@@ -110,7 +149,7 @@ int main(){
                 window.close();
             }
         }
-        if(!arr.sorted) arr.insertion_sort();
+        if(!arr.sorted) arr.Merge_Sort(0,size-1);
         //DRAW();
         
     }
