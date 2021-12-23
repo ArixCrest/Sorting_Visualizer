@@ -3,8 +3,8 @@
 #include <algorithm>
 #include <iostream>
 #include <vector>
-const int W = 1600;
-const int H = 900;
+const int W = 2400;
+const int H = 1800;
 const int size = 1000;
 sf::RenderWindow window(sf::VideoMode(W,H), "Sorting", sf::Style::Default);
 void DRAW();
@@ -32,6 +32,31 @@ struct array{
         }
         sorted = false;
     }
+    //Checking the array
+    void check(){
+        for(int x = 0;x<=size-1;x++){
+            if(arr[x]<=arr[x+1]){
+                clr[x] = 2;
+                if(x==size-2) arr[x+1] = 2;
+            }
+            DRAW();
+        }
+    }
+    //BUBBLE SORT
+    void BUBBLE_SORT(){
+        for(int i = size-1;i>0;i--){
+            for(int j = 0;j<i;j++){
+                if(arr[j]>arr[j+1]){
+                    int temp = arr[j];
+                    arr[j] = arr[j+1];
+                    arr[j+1] = temp;
+                    DRAW();
+                }
+            }
+        }
+    }
+
+    //INSERTIONSORT
     void insertion_sort(){
         int i,j,key;
         for(i = 1;i<size;i++){
@@ -48,15 +73,8 @@ struct array{
             clr[i] = 0;
             clr[j+1] = 0;
         }
-        sorted = true;
-        if(sorted){
-            for(int i = 0;i<size;i++){
-                clr[i] = 2;
-                DRAW();
-            }
-        }
-        DRAW();
     }
+    //MERGESORT
     void merge(int left,int mid,int right){
         int temp[right-left+1];
         int i = left;
@@ -85,8 +103,10 @@ struct array{
         }
         for(int x = left;x<=right;x++){
             arr[x] = temp[x-left];
+            DRAW();
         }
         DRAW();
+        
     }
     void Merge_Sort(int l,int r){
         if(l<r){
@@ -96,6 +116,33 @@ struct array{
             merge(l,mid,r);
         }
     }
+    //QUICKSORT
+    int Partition_qs(int l,int h){
+        int i = l-1;
+        int temp;
+        for(int j = l; j<=h-1;j++){
+            if(arr[j]<arr[h]){
+                i++;
+                temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+                DRAW();
+            }
+        }
+        temp = arr[i+1];
+        arr[i+1] = arr[h];
+        arr[h] = temp;
+        DRAW();
+        return i+1;
+    }
+    void QuickSort(int l, int h){
+        if(l<h){
+            int par = Partition_qs(l,h);
+            QuickSort(l,par-1);
+            QuickSort(par+1,h);
+        }
+    }
+
 };
 array arr(size);
 
@@ -135,7 +182,7 @@ void DRAW(){
 }
 
 int main(){
-    window.setFramerateLimit(120);
+    window.setFramerateLimit(240);
     sf::View view;
     view.setSize(sf::Vector2f(1100.f,1100.f));
     view.setCenter(sf::Vector2f(550,-550));
@@ -151,6 +198,7 @@ int main(){
         }
         if(!arr.sorted) arr.Merge_Sort(0,size-1);
         //DRAW();
+        arr.check();
         
     }
 
