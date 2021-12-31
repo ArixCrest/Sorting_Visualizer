@@ -183,6 +183,44 @@ struct array{
             DRAW();
         }
     }
+    
+    void Shell_Sort(){
+        //original sequence n/2,n/4 ....
+        /*
+        for(int dist = size/2; dist >0;dist = dist/2){
+            for(int i = dist;i<size;i++){
+                int temp = arr[i];
+                int j = i;
+                while(j>=dist && arr[j-dist]>temp){
+                    arr[j] =  arr[j-dist];
+                    DRAW();
+                    j-=dist;
+                }
+                arr[j] = temp;
+                DRAW();
+            }
+
+        }*/
+        // using Knuth Increments (3^k-1)/2
+        int k = 1;
+        while((((k*2+1)*3-1)/2)<size){
+            k = ((k*2+1)*3-1)/2;
+        }
+        for(int dist = k; dist > 0;dist = (((dist*2+1)/3)-1)/2){
+            for(int i = dist;i<size;i++){
+                int temp = arr[i];
+                int j = i;
+                while(j>=dist && arr[j-dist]>temp){
+                    arr[j] =  arr[j-dist];
+                    DRAW();
+                    j-=dist;
+                }
+                arr[j] = temp;
+                DRAW();
+            }
+
+        }
+    }
 
 };
 array arr(size);
@@ -223,7 +261,7 @@ void DRAW(){
 }
 
 int main(){
-    window.setFramerateLimit(500);
+    window.setFramerateLimit(2000);
     sf::View view;
     view.setSize(sf::Vector2f(1100.f,1100.f));
     view.setCenter(sf::Vector2f(550,-550));
@@ -237,7 +275,7 @@ int main(){
                 window.close();
             }
         }
-        if(!arr.sorted) arr.Heap_sort();
+        if(!arr.sorted) arr.Shell_Sort();
         //DRAW();
         arr.check();
         if(arr.sorted){
