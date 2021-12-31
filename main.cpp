@@ -41,6 +41,7 @@ struct array{
             }
             DRAW();
         }
+        sorted = true;
     }
     //BUBBLE SORT
     void BUBBLE_SORT(){
@@ -142,6 +143,46 @@ struct array{
             QuickSort(par+1,h);
         }
     }
+    void heapify(int root,int n){
+        if(root<n){
+            int left = root*2+1;
+            int right = root*2+2;
+            int k;
+            if(left<n && right<n){
+                if(arr[left]>arr[right]){
+                    k = left;
+                }else{
+                    k = right;
+                }
+
+            }
+            else if (left<n){
+                k = left;
+            }else{
+                return;
+            }
+            if(arr[root]<arr[k]){
+                int temp = arr[root];
+                arr[root] = arr[k];
+                arr[k] = temp;
+                DRAW();
+                heapify(k,n);
+            }
+        }
+    }
+    void Heap_sort(){
+        for(int i = size/2-1;i>0;i--){
+            heapify(i,size);
+            DRAW();
+        }
+        for(int i = size-1;i>0;i--){
+            int temp = arr[0];
+            arr[0] = arr[i];
+            arr[i] = temp;
+            heapify(0,i);
+            DRAW();
+        }
+    }
 
 };
 array arr(size);
@@ -182,7 +223,7 @@ void DRAW(){
 }
 
 int main(){
-    window.setFramerateLimit(240);
+    window.setFramerateLimit(500);
     sf::View view;
     view.setSize(sf::Vector2f(1100.f,1100.f));
     view.setCenter(sf::Vector2f(550,-550));
@@ -196,9 +237,12 @@ int main(){
                 window.close();
             }
         }
-        if(!arr.sorted) arr.Merge_Sort(0,size-1);
+        if(!arr.sorted) arr.Heap_sort();
         //DRAW();
         arr.check();
+        if(arr.sorted){
+            window.close();
+        }
         
     }
 
