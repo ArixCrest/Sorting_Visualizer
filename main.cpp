@@ -7,6 +7,8 @@ const int W = 2400;
 const int H = 1800;
 const int size = 1000;
 sf::RenderWindow window(sf::VideoMode(W,H), "Sorting", sf::Style::Default);
+sf::RectangleShape rect_btn(sf::Vector2f(90.f,40.f));
+sf::RectangleShape sort_btn(sf::Vector2f(90.f,40.f));
 void DRAW();
 struct array{
     std::vector<int> arr;
@@ -29,6 +31,7 @@ struct array{
             int temp = arr[i];
             arr[i] = arr[j];
             arr[j] = temp; 
+            clr[i] = 0;
         }
         sorted = false;
     }
@@ -256,31 +259,59 @@ void DRAW(){
         //line->color = sf::Color::Red;
         
     }
-    
+    window.draw(rect_btn);
+    window.draw(sort_btn);
     window.display();
 }
 
 int main(){
-    window.setFramerateLimit(2000);
+    window.setFramerateLimit(600);
     sf::View view;
     view.setSize(sf::Vector2f(1100.f,1100.f));
     view.setCenter(sf::Vector2f(550,-550));
     window.setView(view);
-
     arr.randomize();
+    rect_btn.setFillColor(sf::Color(255,0,0));
+    rect_btn.setPosition(1011.f,-1010.f);
+    sort_btn.setFillColor(sf::Color(0,255,0));
+    sort_btn.setPosition(1011.f,-960.f);
     while(window.isOpen()){
         sf::Event event;
+        window.clear();
         while(window.pollEvent(event)){
             if(event.type == sf::Event::Closed){
                 window.close();
             }
+            if(event.type == sf::Event::Resized){
+                std::cout<<"New Width:"<<event.size.width<<std::endl;
+                std::cout<<"New Height:"<<event.size.height<<std::endl;
+            }
+            if(event.type == sf::Event::KeyPressed){
+                if(event.key.code == sf::Keyboard::R){
+                    arr.randomize();
+                    std::cout<<"Randomizing the array! "<< std::endl;
+                }
+                if(event.key.code == sf::Keyboard::S){
+                    std::cout<<"Sorting the array!"<< std::endl;
+                    arr.QuickSort(0,size-1);
+                    arr.check();
+                }
+            }
+            if(event.type == sf::Event::MouseButtonPressed){
+                auto mousepos = sf::Mouse::getPosition(window);
+                //std::cout<<mousepos.x<<" "<<mousepos.y<<std::endl;
+                auto mousecoords = window.mapPixelToCoords(mousepos);
+                if(rect_btn.getGlobalBounds().contains(mousecoords)){
+                    arr.randomize();
+                }
+                if(sort_btn.getGlobalBounds().contains(mousecoords)){
+                    arr.QuickSort(0,size-1);
+                    arr.check();
+                }
+                
+            }
         }
-        if(!arr.sorted) arr.Shell_Sort();
-        //DRAW();
-        arr.check();
-        if(arr.sorted){
-            window.close();
-        }
+        DRAW();
         
     }
 
