@@ -7,8 +7,11 @@ const int W = 2400;
 const int H = 1800;
 const int size = 1000;
 sf::RenderWindow window(sf::VideoMode(W,H), "Sorting", sf::Style::Default);
-sf::RectangleShape rect_btn(sf::Vector2f(90.f,40.f));
+sf::RectangleShape rand_btn(sf::Vector2f(90.f,40.f));
 sf::RectangleShape sort_btn(sf::Vector2f(90.f,40.f));
+sf::Font font;
+sf::Text rand_txt;
+sf::Text sort_txt;
 void DRAW();
 struct array{
     std::vector<int> arr;
@@ -31,6 +34,8 @@ struct array{
             int temp = arr[i];
             arr[i] = arr[j];
             arr[j] = temp; 
+        }
+        for(int i = 0;i<size;i++){
             clr[i] = 0;
         }
         sorted = false;
@@ -259,22 +264,39 @@ void DRAW(){
         //line->color = sf::Color::Red;
         
     }
-    window.draw(rect_btn);
+    window.draw(rand_btn);
     window.draw(sort_btn);
+    window.draw(sort_txt);
+    window.draw(rand_txt);
     window.display();
+
 }
 
 int main(){
     window.setFramerateLimit(600);
+    //window.setVerticalSyncEnabled(true); makes simulation slower
     sf::View view;
-    view.setSize(sf::Vector2f(1100.f,1100.f));
-    view.setCenter(sf::Vector2f(550,-550));
+    view.setSize(sf::Vector2f(1040.f,1100.f));
+    view.setCenter(sf::Vector2f(520.f,-550));
     window.setView(view);
     arr.randomize();
-    rect_btn.setFillColor(sf::Color(255,0,0));
-    rect_btn.setPosition(1011.f,-1010.f);
+    //buttons
+    rand_btn.setFillColor(sf::Color(0,255,0));
+    rand_btn.setPosition(20.f,-1090.f);
     sort_btn.setFillColor(sf::Color(0,255,0));
-    sort_btn.setPosition(1011.f,-960.f);
+    sort_btn.setPosition(120.f,-1090.f);
+    //texts
+    font.loadFromFile("Arial.ttf");
+    rand_txt.setFont(font);
+    rand_txt.setString("Randomize");
+    rand_txt.setStyle(sf::Text::Bold);
+    rand_txt.setPosition(sf::Vector2f(25.f,-1080.f));
+    rand_txt.setCharacterSize(14);
+    sort_txt.setFont(font);
+    sort_txt.setString("Sort");
+    sort_txt.setStyle(sf::Text::Bold);
+    sort_txt.setPosition(sf::Vector2f(145.f,-1080.f));
+    sort_txt.setCharacterSize(14);
     while(window.isOpen()){
         sf::Event event;
         window.clear();
@@ -301,12 +323,22 @@ int main(){
                 auto mousepos = sf::Mouse::getPosition(window);
                 //std::cout<<mousepos.x<<" "<<mousepos.y<<std::endl;
                 auto mousecoords = window.mapPixelToCoords(mousepos);
-                if(rect_btn.getGlobalBounds().contains(mousecoords)){
+                if(rand_btn.getGlobalBounds().contains(mousecoords)){
+                    std::cout<<"Randomizing the array! "<< std::endl;
                     arr.randomize();
+                    sort_btn.setFillColor(sf::Color(0,255,0));
                 }
                 if(sort_btn.getGlobalBounds().contains(mousecoords)){
-                    arr.QuickSort(0,size-1);
-                    arr.check();
+                    if(arr.sorted==false){
+                        std::cout<<"Sorting the array!"<< std::endl;
+                        rand_btn.setFillColor(sf::Color(255,0,0));
+                        arr.QuickSort(0,size-1);
+                        arr.check();
+                        rand_btn.setFillColor(sf::Color(0,255,0));
+                        sort_btn.setFillColor(sf::Color(255,0,0));
+                    }else{
+                        std::cout<<"Array already Sorted."<< std::endl;
+                    }
                 }
                 
             }
